@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { AuthRouter, DriveRouter } from "@modules";
+import { AuthRouter, FilesRouter } from "@modules";
 
 const router = Router()
 
 router.use("/auth", AuthRouter)
-router.use("/drive", DriveRouter)
+router.use("/files", FilesRouter)
 
 export default router

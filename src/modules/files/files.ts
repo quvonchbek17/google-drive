@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { ErrorHandler } from "@errors";
 import { driveBuilder } from "@config";
 
-export class DriveController {
+export class FilesController {
   static async GetFiles(
     req: Request,
     res: Response,
