@@ -14,15 +14,15 @@ const app: Application = express();
 //// cors
 app.use(cors({ origin: "*" }));
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET!,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET!,
+//     resave: false,
+//     saveUninitialized: false,
+//   })
+// );
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "src", "views"))
@@ -30,11 +30,11 @@ app.set("views", path.join(process.cwd(), "src", "views"))
 // Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(process.cwd(), "src", "public")))
+// app.use(express.static(path.join(process.cwd(), "src", "public")))
 
 app.use(router);
 
-app.get('/', (req, res) => res.render("index.ejs"));
+// app.get('/', (req, res) => res.render("index.ejs"));
 
 app.use(errorHandler);
 
