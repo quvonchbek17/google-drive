@@ -15,7 +15,7 @@ export class RevisionsController {
       const { fileId } = req.query;
       const result = await drive.revisions.list({
         fileId: String(fileId),
-        fields: "*", // Fayldagi barcha ma'lumotlarni qaytarish uchun
+        fields: "*", 
       });
 
       res.status(200).send({
