@@ -5,12 +5,11 @@ import { driveBuilder } from "@config";
 import path from "path";
 import * as fs from "fs";
 
-let permissionFields =
+let revisionFields =
   "id, type, emailAddress, role, allowFileDiscovery, displayName, domain, expirationTime, teamDrivePermissionDetails, photoLink, view, deleted, pendingOwner, permissionDetails";
 
-export class PermissionsController {
-
-  static async GetAllPermissions(
+export class RevisionsController {
+  static async GetAllRevisions(
     req: Request,
     res: Response,
     next: NextFunction
@@ -20,42 +19,14 @@ export class PermissionsController {
       const drive = await driveBuilder(token);
 
       const { fileId } = req.query;
-
-      const result = await drive.permissions.list({
+      const result = await drive.revisions.list({
         fileId: String(fileId),
-        fields: `permissions(${permissionFields})`,
+        fields: "*", // Fayldagi barcha ma'lumotlarni qaytarish uchun
       });
 
       res.status(200).send({
         success: true,
-        message: 'Filega berilgan ruxsatlar',
-        data: result.data.permissions,
-      });
-    } catch (error: any) {
-      next(new ErrorHandler(error.message, error.status));
-    }
-  }
-
-  static async GetPermissionById(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const token = req.headers.access_token as string;
-      const drive = await driveBuilder(token);
-
-      const { fileId, permissionId } = req.query;
-
-      const result = await drive.permissions.get({
-        fileId: String(fileId),
-        permissionId: String(permissionId),
-        fields: permissionFields,
-      });
-
-      res.status(200).send({
-        success: true,
-        message: "Permission batafsil ma'lumotlari",
+        message: "File tarixi",
         data: result.data,
       });
     } catch (error: any) {
@@ -63,7 +34,7 @@ export class PermissionsController {
     }
   }
 
-  static async CreatePermission(
+  static async GetRevisionById(
     req: Request,
     res: Response,
     next: NextFunction
@@ -72,24 +43,16 @@ export class PermissionsController {
       const token = req.headers.access_token as string;
       const drive = await driveBuilder(token);
 
-      const { fileId, role, type, emailAddress, expirationTime } = req.body;
-
-      const permission: drive_v3.Schema$Permission = {
-        role,
-        type,
-        emailAddress, // emailAddress kiritish ixtiyoriy, agar `type` 'user' bo'lsa.
-        expirationTime
-      };
-
-      const result = await drive.permissions.create({
-        fileId,
-        requestBody: permission,
-        fields: permissionFields,
+      const { fileId, revisionId } = req.query;
+      const result = await drive.revisions.get({
+        fileId: String(fileId),
+        revisionId: String(revisionId),
+        fields: "*",
       });
 
       res.status(200).send({
         success: true,
-        message: "Permission yaratildi",
+        message: "Revision haqida batafsil",
         data: result.data,
       });
     } catch (error: any) {
@@ -97,7 +60,7 @@ export class PermissionsController {
     }
   }
 
-  static async UpdatePermission(
+  static async UpdateRevision(
     req: Request,
     res: Response,
     next: NextFunction
@@ -106,21 +69,21 @@ export class PermissionsController {
       const token = req.headers.access_token as string;
       const drive = await driveBuilder(token);
 
-      const { fileId, permissionId, role } = req.body;
+      const { fileId, revisionId, published, publishAuto, publishedOutsideDomain } = req.body;
 
-      const result = await drive.permissions.update({
-        fileId,
-        permissionId,
+      const result = await drive.revisions.update({
+        fileId: String(fileId),
+        revisionId: String(revisionId),
         requestBody: {
-          role
+            publishAuto,
+            published,
+            publishedOutsideDomain
         },
-        fields: permissionFields,
-        transferOwnership: role === "owner"
       });
 
       res.status(200).send({
         success: true,
-        message: 'Permission yangilandi',
+        message: 'Revision yangilandi',
         data: result.data,
       });
     } catch (error: any) {
@@ -128,7 +91,7 @@ export class PermissionsController {
     }
   }
 
-  static async DeletePermission(
+  static async DeleteRevision(
     req: Request,
     res: Response,
     next: NextFunction
@@ -137,17 +100,16 @@ export class PermissionsController {
       const token = req.headers.access_token as string;
       const drive = await driveBuilder(token);
 
-      const { fileId, permissionId } = req.body;
+      const { fileId, revisionId } = req.body;
 
-      await drive.permissions.delete({
+      await drive.revisions.delete({
         fileId: String(fileId),
-        permissionId: String(permissionId),
+        revisionId: String(revisionId),
       });
 
-      drive.revisions
       res.status(200).send({
         success: true,
-        message: "Permission o'chirildi ",
+        message: "Revision o'chirildi",
       });
     } catch (error: any) {
       next(new ErrorHandler(error.message, error.status));
