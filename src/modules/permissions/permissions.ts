@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { drive_v3 } from "googleapis";
 import { ErrorHandler } from "@errors";
 import { driveBuilder } from "@config";
-import path from "path";
-import * as fs from "fs";
 
 let permissionFields =
   "id, type, emailAddress, role, allowFileDiscovery, displayName, domain, expirationTime, teamDrivePermissionDetails, photoLink, view, deleted, pendingOwner, permissionDetails";

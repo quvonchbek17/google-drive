@@ -11,7 +11,14 @@ export class AuthController {
   // Redirect to Google login
   static googleLogin(req: Request, res: Response, next: NextFunction): void {
     passport.authenticate("google", {
-      scope: ["profile", "email", "https://www.googleapis.com/auth/drive"],
+      scope: [
+        "profile",
+        "email",
+        "https://www.googleapis.com/auth/drive",
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive.appdata",
+        "https://www.googleapis.com/auth/drive.metadata.readonly"
+      ],
       accessType: "offline",
       prompt: "consent",
     })(req, res, next);
@@ -67,8 +74,8 @@ export class AuthController {
       res.status(200).send({
         success: true,
         message: "Yangi tokenlar",
-        data: response.data
-      })
+        data: response.data,
+      });
     } catch (error: any) {
       next(new ErrorHandler(error.message, error.status));
     }

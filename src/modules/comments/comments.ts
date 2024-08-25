@@ -140,36 +140,4 @@ export class CommentController {
     }
   }
 
-
-  static async ReplyToComment(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const token = req.headers.access_token as string;
-      const drive = await driveBuilder(token);
-
-      const { fileId, commentId, content } = req.body;
-
-      const reply: drive_v3.Schema$Reply = {
-        content,
-      };
-
-      const response = await drive.replies.create({
-        fileId,
-        commentId,
-        requestBody: reply,
-        fields: commentFields,
-      });
-
-      res.status(200).send({
-        success: true,
-        message: 'Xabarga reply qilindi',
-        data: response.data,
-      });
-    } catch (error: any) {
-      next(new ErrorHandler(error.message, error.status));
-    }
-  }
 }
